@@ -1,49 +1,32 @@
-import React, { useState, useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
+import StoriesUserContext from "../../Contexts/StoriesUserContext";
 import getBase64 from "../../Functions/getBase64";
-import ClothesContext from "../../Contexts/ClothesContext";
-import DataContext from "../../Contexts/DataContext";
 
-const EditC = () => {
-  const [type, setType] = useState("");
-  const [color, setColor] = useState("");
-  const [price, setPrice] = useState("");
+function EditS() {
+  const [title, setTitle] = useState("");
+  const [info, setInfo] = useState("");
+  const [amount_wanted, setAmount_wanted] = useState("");
+  const fileInput = useRef();
   const [photoPrint, setPhotoPrint] = useState(null);
   const [deletePhoto, setDeletePhoto] = useState(false);
-  const fileInput = useRef();
 
-  const { setEditData, setModalData, modalData } = useContext(ClothesContext);
-  const { setMsg } = useContext(DataContext);
-
-  const handlePhoto = () => {
+  const doPhoto = () => {
     getBase64(fileInput.current.files[0])
       .then((photo) => setPhotoPrint(photo))
       .catch((_) => {
-        //tylim
+        // tylim
       });
   };
 
-  const editClothesItem = () => {
-    if (type.length === 0 || type.length > 50) {
-      setMsg("Invalid title");
-      return;
-    }
-    if (price.replace(/[^\d.]/, "") !== price || price.length === 0) {
-      setMsg("Invalid price");
-      return;
-    }
-    if (color.length === 0) {
-      setMsg("Must enter a color");
-      return;
-    }
-    if (parseFloat(price) > 99.99) {
-      setMsg("Max price is 99.99 Eur");
-      return;
-    }
+  const { setEditData, modalData, setModalData } =
+    useContext(StoriesUserContext);
+
+  const edit = () => {
     setEditData({
+      title,
+      info,
+      amount_wanted,
       id: modalData.id,
-      type,
-      color,
-      price: parseFloat(price),
       deletePhoto: deletePhoto ? 1 : 0,
       image: photoPrint,
     });
@@ -52,17 +35,18 @@ const EditC = () => {
   };
 
   useEffect(() => {
-    if (modalData === null) {
+    if (null === modalData) {
       return;
     }
-    setType(modalData.type);
-    setColor(modalData.color);
-    setPrice(modalData.price);
+
+    setTitle(modalData.title);
+    setInfo(modalData.info);
+    setAmount_wanted(modalData.amount_wanted);
     setPhotoPrint(modalData.image);
     setDeletePhoto(false);
   }, [modalData]);
 
-  if (modalData === null) {
+  if (null === modalData) {
     return null;
   }
 
@@ -71,7 +55,7 @@ const EditC = () => {
       <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content">
           <div className="modal-header">
-            <h5 className="modal-title">Edit Clothes Item</h5>
+            <h5 className="modal-title">Edit Story</h5>
             <button
               onClick={() => setModalData(null)}
               type="button"
@@ -82,30 +66,21 @@ const EditC = () => {
           <div className="card m-4">
             <div className="card-body">
               <div className="mb-3">
-                <label className="form-label">Type</label>
+                <label className="form-label">Story Title</label>
                 <input
                   type="text"
                   className="form-control"
-                  value={type}
-                  onChange={(e) => setType(e.target.value)}
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
                 />
               </div>
               <div className="mb-3">
-                <label className="form-label">Color</label>
+                <label className="form-label">Info</label>
                 <input
                   type="text"
                   className="form-control"
-                  value={color}
-                  onChange={(e) => setColor(e.target.value)}
-                />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">Price</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={price}
-                  onChange={(e) => setPrice(e.target.value)}
+                  value={info}
+                  onChange={(e) => setInfo(e.target.value)}
                 />
               </div>
               <div className="mb-3">
@@ -114,12 +89,12 @@ const EditC = () => {
                   ref={fileInput}
                   type="file"
                   className="form-control"
-                  onChange={handlePhoto}
+                  onChange={doPhoto}
                 />
               </div>
               {photoPrint ? (
                 <div className="img-bin">
-                  <label htmlFor="image-delete">Delete image</label>
+                  <label htmlFor="image-delete">X</label>
                   <input
                     id="image-delete"
                     type="checkbox"
@@ -130,7 +105,7 @@ const EditC = () => {
                 </div>
               ) : null}
               <button
-                onClick={editClothesItem}
+                onClick={edit}
                 type="button"
                 className="btn btn-outline-success"
               >
@@ -142,6 +117,6 @@ const EditC = () => {
       </div>
     </div>
   );
-};
+}
 
-export default EditC;
+export default EditS;

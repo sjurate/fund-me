@@ -5,9 +5,8 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import "./App.scss";
 import Nav from "./Components/Nav";
 import Home from "./Components/home/MainH";
-import Clothes from "./Components/clothes/MainC";
-import Orders from "./Components/orders/MainO";
-import MyOrders from "./Components/myorders/MainMO";
+import StoriesUser from "./Components/stories-user/MainS";
+import StoriesAdmin from "./Components/stories-admin/MainSA";
 import LoginPage from "./Components/loging/LoginPage";
 import LogoutPage from "./Components/loging/LogoutPage";
 import RegisterPage from "./Components/register/MainR";
@@ -64,10 +63,18 @@ function App() {
             }
           ></Route>
           <Route
-            path="/myorders"
+            path="/stories-user"
             element={
               <RequireAuth role="user">
-                <MyOrders />
+                <StoriesUser />
+              </RequireAuth>
+            }
+          ></Route>
+          <Route
+            path="/stories-admin"
+            element={
+              <RequireAuth role="admin">
+                <StoriesAdmin />
               </RequireAuth>
             }
           ></Route>
@@ -79,22 +86,6 @@ function App() {
             path="/logout"
             element={<LogoutPage setRoleChange={setRoleChange} />}
           />
-          <Route
-            path="/clothes"
-            element={
-              <RequireAuth role="admin">
-                <Clothes />
-              </RequireAuth>
-            }
-          ></Route>
-          <Route
-            path="/orders"
-            element={
-              <RequireAuth role="admin">
-                <Orders />
-              </RequireAuth>
-            }
-          ></Route>
           <Route
             path="/register"
             element={<RegisterPage setRoleChange={setRoleChange} />}

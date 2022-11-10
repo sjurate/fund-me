@@ -1,40 +1,56 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useState, useEffect, useContext } from "react";
 import HomeContext from "../../Contexts/HomeContext";
 import LineH from "./LineH";
 
-const sortData = [
-  { v: "default", t: "Default" },
-  { v: "price_asc", t: "Price 1-9" },
-  { v: "price_desc", t: "Price 9-1" },
-];
+// const sortData = [
+//   { v: "default", t: "Default" },
+//   { v: "price_asc", t: "Price 1-9" },
+//   { v: "price_desc", t: "Price 9-1" },
+//   { v: "rate_asc", t: "Rating 1-9" },
+//   { v: "rate_desc", t: "Rating 9-1" },
+// ];
 
-const ListH = () => {
-  const [sortBy, setSortBy] = useState("default");
+function ListH() {
+  const { stories, setStories } = useContext(HomeContext);
 
-  const { clothes, setClothes, filterOn, filterWhat } = useContext(HomeContext);
+  //const [sortBy, setSortBy] = useState("default");
+  // const [stats, setStats] = useState({ movieCount: null });
 
-  const resetFilter = () => {
-    setClothes((prevClothes) => prevClothes.map((c) => ({ ...c, show: true })));
-    filterOn.current = false;
-    filterWhat.current = null;
-  };
+  // useEffect(() => {
+  //   if (null === movies) {
+  //     return;
+  //   }
+  //   setStats((s) => ({ ...s, movieCount: movies.length }));
+  // }, [movies]);
 
-  useEffect(() => {
-    switch (sortBy) {
-      case "price_asc":
-        setClothes((c) => [...c].sort((a, b) => a.price - b.price));
-        break;
-      case "price_desc":
-        setClothes((c) => [...c].sort((b, a) => a.price - b.price));
-        break;
-      default:
-        setClothes((c) => [...(c ?? [])].sort((a, b) => a.row - b.row));
-    }
-  }, [sortBy, setClothes]);
+  // useEffect(() => {
+  //   switch (sortBy) {
+  //     case "price_asc":
+  //       setMovies((m) => [...m].sort((a, b) => a[1][0].price - b[1][0].price));
+  //       break;
+  //     case "price_desc":
+  //       setMovies((m) => [...m].sort((b, a) => a[1][0].price - b[1][0].price));
+  //       break;
+  //     case "rate_asc":
+  //       setMovies((m) =>
+  //         [...m].sort((x, c) => x[1][0].rating - c[1][0].rating)
+  //       );
+  //       break;
+  //     case "rate_desc":
+  //       setMovies((m) =>
+  //         [...m].sort((jo, no) => no[1][0].rating - jo[1][0].rating)
+  //       );
+  //       break;
+  //     default:
+  //       setMovies((m) =>
+  //         [...(m ?? [])].sort((a, b) => a[1][0].row - b[1][0].row)
+  //       );
+  //   }
+  // }, [sortBy, setMovies]);
 
   return (
     <>
-      <div className="card m-4">
+      {/* <div className="card m-4">
         <h5 className="card-header">Sort</h5>
         <div className="card-body">
           <div className="mb-3">
@@ -50,27 +66,22 @@ const ListH = () => {
                 </option>
               ))}
             </select>
+            cloh
           </div>
         </div>
-      </div>
+      </div> */}
       <div className="card m-4">
-        <h5 className="card-header">Clothes List</h5>
-        <div className="card-small-info">
-          <small> Click on item title or color to filter </small>
-          <small onClick={resetFilter} className="click-link">
-            (show all clothes)
-          </small>
-        </div>
+        <h5 className="card-header">People Stories</h5>
         <div className="card-body">
           <ul className="list-group">
-            {clothes?.map((c) =>
-              c.show ? <LineH key={c.id} clothe={c} /> : null
-            )}
+            {stories?.map((s) => (
+              <LineH key={s[1][0].id} storie={s} />
+            ))}
           </ul>
         </div>
       </div>
     </>
   );
-};
+}
 
 export default ListH;

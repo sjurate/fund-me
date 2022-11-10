@@ -1,8 +1,8 @@
 import React, { useContext } from "react";
-import MessagesContext from "../Contexts/DataContext";
+import DataContext from "../Contexts/DataContext";
 
 const Messages = () => {
-  const { messages, setMessages } = useContext(MessagesContext);
+  const { messages, setMessages } = useContext(DataContext);
 
   const closeMsg = (id) => {
     setMessages((prevMessages) => prevMessages.filter((m) => m.id !== id));

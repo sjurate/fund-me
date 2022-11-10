@@ -1,78 +1,86 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import HomeContext from "../../Contexts/HomeContext";
 import ListH from "./ListH";
-import CreateH from "./CreateH";
 import { authConfig } from "../../Functions/auth";
-import DataContext from "../../Contexts/DataContext";
 
-const MainH = () => {
-  const [clothes, setClothes] = useState(null);
+function MainH() {
   const [lastUpdate, setLastUpdate] = useState(Date.now());
-  const [modalData, setModalData] = useState(null);
-  const [order, setOrder] = useState(null);
-  const filterOn = useRef(false);
-  const filterWhat = useRef(null);
+  const [stories, setStories] = useState(null);
+  const [amountData, setAmountData] = useState(null);
+  const [donation, setDonation] = useState(null);
 
-  const { setShowLinks } = useContext(DataContext);
+  const reList = (data) => {
+    const d = new Map();
+    data.forEach((line) => {
+      if (d.has(line.title)) {
+        d.set(line.title, [...d.get(line.title), line]);
+      } else {
+        d.set(line.title, [line]);
+      }
+    });
+    return [...d];
+  };
+
+  // READ for list of stories with donations
 
   useEffect(() => {
     axios
-      .get("http://localhost:3003/home/clothes", authConfig())
+      .get("http://localhost:3003/home/stories-hp", authConfig())
       .then((res) => {
-        if (filterOn.current) {
-          setClothes(
-            res.data.map((d, i) =>
-              filterWhat.current === d.type
-                ? { ...d, show: true, row: i }
-                : { ...d, show: false, row: i }
-            )
-          );
-        } else {
-          setClothes(res.data.map((d, i) => ({ ...d, show: true, row: i })));
-        }
+        console.log(reList(res.data));
+        setStories(reList(res.data));
       });
   }, [lastUpdate]);
 
-  // CREATE ORDER
+  /// CREATE donation
 
   useEffect(() => {
-    if (order === null) {
+    if (null === donation) {
       return;
     }
     axios
-      .post(
-        "http://localhost:3003/home/orders/" + order.clothe_id,
-        order,
+      .post("http://localhost:3003/home/donations", donation, authConfig())
+      .then((res) => {
+        setLastUpdate(Date.now());
+      });
+  }, [donation]);
+
+  // UPDATE STORIE
+
+  useEffect(() => {
+    if (null === amountData) {
+      return;
+    }
+    axios
+      .put(
+        "http://localhost:3003/home/stories-donation/" + amountData.id,
+        amountData,
         authConfig()
       )
       .then((res) => {
         setLastUpdate(Date.now());
       });
-  }, [order]);
+  }, [amountData]);
 
   return (
     <HomeContext.Provider
       value={{
-        clothes,
-        setClothes,
-        setModalData,
-        modalData,
-        setOrder,
-        filterOn,
-        filterWhat,
+        setDonation,
+        stories,
+        setAmountData,
+        setStories,
       }}
     >
-      <div className="container" onClick={() => setShowLinks(false)}>
+      <div className="container">
         <div className="row">
-          <div className="col col-lg-10 col-md-12 col-sm-12">
+          <div className="col-12">
             <ListH />
           </div>
         </div>
-        <CreateH />
       </div>
     </HomeContext.Provider>
   );
-};
+}
 
 export default MainH;

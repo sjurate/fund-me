@@ -10,7 +10,7 @@ function Nav({ status }) {
       <div className="row">
         <nav className="navbar navbar-expand-md navbar-dark bg-dark col-12">
           <div className="container-fluid">
-            <span className="navbar-brand">Siuvykla</span>
+            <span className="navbar-brand">GoFundMe</span>
             <div>
               <div className="navbar-nav" id={showLinks ? "hidden" : ""}>
                 {status === 2 || status === 3 || status === 4 ? (
@@ -26,32 +26,22 @@ function Nav({ status }) {
                 ) : null}
                 {status === 2 || status === 3 || status === 4 ? (
                   <NavLink
-                    to="/myorders"
+                    to="/stories-user"
                     className={({ isActive }) =>
                       isActive ? "nav-link active" : "nav-link"
                     }
                   >
-                    My Orders
+                    My Stories
                   </NavLink>
                 ) : null}
                 {status === 3 ? (
                   <NavLink
-                    to="/orders"
+                    to="/stories-admin"
                     className={({ isActive }) =>
                       isActive ? "nav-link active" : "nav-link"
                     }
                   >
-                    Orders
-                  </NavLink>
-                ) : null}
-                {status === 3 ? (
-                  <NavLink
-                    to="/clothes"
-                    className={({ isActive }) =>
-                      isActive ? "nav-link active" : "nav-link"
-                    }
-                  >
-                    Clothes
+                    Stories
                   </NavLink>
                 ) : null}
                 {status !== 1 ? (

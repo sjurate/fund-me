@@ -18,7 +18,7 @@ const con = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "",
-  database: "siuvyklareg",
+  database: "fund_me",
 });
 
 //////////////////// LOGIN START /////////////////
@@ -140,16 +140,22 @@ app.get("/home/users", (req, res) => {
   });
 });
 
-// CREATE ITEM of clothes FOR ADMIN
+// CREATE STORIE for user
 
-app.post("/server/clothes", (req, res) => {
+app.post("/home/stories", (req, res) => {
   const sql = `
-    INSERT INTO clothes (type, color, price, image)
-    VALUES (?, ?, ?, ?)
+    INSERT INTO stories (title, info, amount_wanted, image, user_id)
+    VALUES (?, ?, ?, ?, ?)
     `;
   con.query(
     sql,
-    [req.body.type, req.body.color, req.body.price, req.body.image],
+    [
+      req.body.title,
+      req.body.info,
+      req.body.amount_wanted,
+      req.body.image,
+      req.body.user_id,
+    ],
     (err, result) => {
       if (err) throw err;
       res.send(result);
@@ -157,16 +163,16 @@ app.post("/server/clothes", (req, res) => {
   );
 });
 
-// CREATE an ORDER (for users (at homepage))
+// CREATE DONATION for user
 
-app.post("/home/orders/:id", (req, res) => {
+app.post("/home/donations", (req, res) => {
   const sql = `
-    INSERT INTO orders (size, comment, user_id, clothe_id)
-    VALUES (?, ?, ?, ?)
+    INSERT INTO donations (name, amount_donating, storie_id)
+    VALUES (?, ?, ?)
     `;
   con.query(
     sql,
-    [req.body.size, req.body.comment, req.body.user_id, req.params.id],
+    [req.body.name, req.body.amount_donating, req.body.storie_id],
     (err, result) => {
       if (err) throw err;
       res.send(result);
@@ -174,12 +180,27 @@ app.post("/home/orders/:id", (req, res) => {
   );
 });
 
-// READ ITEMS of clothes FOR ADMIN
+//  READ STORIES for CURRENT USER
 
-app.get("/server/clothes", (req, res) => {
+app.get("/home/stories/:currentUserId", (req, res) => {
+  const sql = `
+  SELECT *
+    FROM stories
+    WHERE stories.user_id = ?
+    
+    `;
+  con.query(sql, [req.params.currentUserId], (err, result) => {
+    if (err) throw err;
+    res.send(result);
+  });
+});
+
+// READ STORIES for admin
+
+app.get("/home/stories-admin", (req, res) => {
   const sql = `
     SELECT *
-    FROM clothes
+    FROM stories
     ORDER BY id DESC
     `;
   con.query(sql, (err, result) => {
@@ -188,13 +209,16 @@ app.get("/server/clothes", (req, res) => {
   });
 });
 
-// READ ITEMS of clothes FOR CUSTOMERS (HOME PAGE)
+// READ STORIES for home page
 
-app.get("/home/clothes", (req, res) => {
+app.get("/home/stories-hp", (req, res) => {
   const sql = `
-  SELECT *
-  FROM clothes
-  ORDER BY id DESC
+  SELECT s.*, d.id AS did, d.name, d.amount_donating
+    FROM stories AS s
+    LEFT JOIN donations AS d
+    ON d.storie_id = s.id
+    WHERE s.status = 1
+    ORDER BY s.id
     `;
   con.query(sql, (err, result) => {
     if (err) throw err;
@@ -202,68 +226,35 @@ app.get("/home/clothes", (req, res) => {
   });
 });
 
-// READ ORDERS FOR USERS
+// UPDATE STORIE for user
 
-app.get("/home/orders/:currentUserId", (req, res) => {
-  const sql = `
-  SELECT o.*, c.type, c.color, c.price
-    FROM orders AS o
-    LEFT JOIN clothes AS c
-    ON o.clothe_id = c.id
-    WHERE o.user_id = ?
-    ORDER BY o.id
-    `;
-  con.query(sql, [req.params.currentUserId], (err, result) => {
-    if (err) throw err;
-    res.send(result);
-  });
-});
-
-//READ ORDERS FOR ADMIN
-
-app.get("/home/orders", (req, res) => {
-  const sql = `
-  SELECT o.*, c.type, c.color, c.price
-    FROM orders AS o
-    LEFT JOIN clothes AS c
-    ON o.clothe_id = c.id
-    ORDER BY o.id
-    `;
-  con.query(sql, (err, result) => {
-    if (err) throw err;
-    res.send(result);
-  });
-});
-
-// UPDATE ITEM of clothes FOR ADMIN
-
-app.put("/server/clothes/:id", (req, res) => {
+app.put("/home/stories/:id", (req, res) => {
   let sql;
   let r;
   if (req.body.deletePhoto) {
     sql = `
-        UPDATE clothes
-        SET type = ?, color = ?, price = ?, image = null
+        UPDATE stories
+        SET title = ?, info = ?, amount_wanted = ?, image = null
         WHERE id = ?
         `;
-    r = [req.body.type, req.body.color, req.body.price, req.params.id];
+    r = [req.body.title, req.body.info, req.body.amount_wanted, req.params.id];
   } else if (req.body.image) {
     sql = `
-        UPDATE clothes
-        SET type = ?,  color = ?, price = ?, image = ?
+        UPDATE stories
+        SET title = ?,  info = ?, amount_wanted = ?, image = ?
         WHERE id = ?
         `;
     r = [
-      req.body.type,
-      req.body.color,
-      req.body.price,
+      req.body.title,
+      req.body.info,
+      req.body.amount_wanted,
       req.body.image,
       req.params.id,
     ];
   } else {
     sql = `
-        UPDATE clothes
-        SET type = ?, color = ?, price = ?
+        UPDATE stories
+        SET title = ?, info = ?, amount_wanted = ?
         WHERE id = ?
         `;
     r = [req.body.type, req.body.color, req.body.price, req.params.id];
@@ -274,11 +265,11 @@ app.put("/server/clothes/:id", (req, res) => {
   });
 });
 
-// UPDATE ORDER FOR ADMIN - APPROVE
+// UPDATE STORIE for admin - APPROVE
 
-app.put("/server/orders/:id", (req, res) => {
+app.put("/home/stories-admin/:id", (req, res) => {
   const sql = `
-    UPDATE orders
+    UPDATE stories
     SET status = ?
     WHERE id = ?
     `;
@@ -288,11 +279,26 @@ app.put("/server/orders/:id", (req, res) => {
   });
 });
 
-// DELETE ITEM of clothes FOR ADMIN
+// UPDATE STORIE - add donation
 
-app.delete("/server/clothes/:id", (req, res) => {
+app.put("/home/stories-donation/:id", (req, res) => {
   const sql = `
-    DELETE FROM clothes
+    UPDATE stories
+    SET 
+    amount_collected = amount_collected + ?
+    WHERE id = ?
+    `;
+  con.query(sql, [req.body.amount_donating, req.params.id], (err, result) => {
+    if (err) throw err;
+    res.send(result);
+  });
+});
+
+// DELETE STORIE for user
+
+app.delete("/home/stories/:id", (req, res) => {
+  const sql = `
+    DELETE FROM stories
     WHERE id = ?
     `;
   con.query(sql, [req.params.id], (err, result) => {
@@ -301,18 +307,7 @@ app.delete("/server/clothes/:id", (req, res) => {
   });
 });
 
-// DELETE ORDER FOR ADMIN
-
-app.delete("/server/orders/:id", (req, res) => {
-  const sql = `
-    DELETE FROM orders
-    WHERE id = ?
-    `;
-  con.query(sql, [req.params.id], (err, result) => {
-    if (err) throw err;
-    res.send(result);
-  });
-});
+//******************************************************************************************************* */
 
 app.listen(port, () => {
   console.log(`Siuvykla per ${port} portą!`);
