@@ -14,18 +14,34 @@ function LineSA({ storie }) {
 
   return (
     <li className="list-group-item">
-      <div className="home__content__info">
-        <h2>{storie.title}</h2>
-        {storie.image ? (
-          <div className="img-bin">
-            <img src={storie.image} alt={storie.title}></img>
+      <div className="li-content-one">
+        <div className="li-content-one-main">
+          <div className="li-content-one-img">
+            {storie.image ? (
+              <div className="img-bin">
+                <img src={storie.image} alt={storie.title}></img>
+              </div>
+            ) : (
+              <div className="no-image">No image</div>
+            )}
           </div>
-        ) : null}
-        <div>{storie.amount_wanted}</div>
-        <div>{storie.info}</div>
-        <div>{storie.status ? "Approved" : "Not approved"}</div>
+          <div className="li-content-one-info">
+            <div className="li-content-details">
+              Story title: {storie.title}
+            </div>
+            <div className="li-content-details">
+              Story description: {storie.info}
+            </div>
+            <div className="li-content-details">
+              Amount wanted: {storie.amount_wanted}
+            </div>
+            <div className="li-content-details">
+              Status: {storie.status ? "Approved" : "Not approved"}
+            </div>
+          </div>
+        </div>
       </div>
-      <div className="button-box">
+      <div className="li-btn-box">
         <button
           onClick={approve}
           type="button"

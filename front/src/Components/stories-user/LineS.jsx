@@ -6,37 +6,45 @@ function LineS({ storie }) {
 
   return (
     <li className="list-group-item">
-      <div className="line">
-        <div className="line__content">
-          <div className="line__content__info">
+      <div className="li-content-one">
+        <div className="li-content-one-main">
+          <div className="li-content-one-img">
             {storie.image ? (
               <div className="img-bin">
                 <img src={storie.image} alt={storie.title}></img>
               </div>
             ) : (
-              <span className="red-image">No image</span>
+              <div className="no-image">No image</div>
             )}
           </div>
-          <div className="line__content__title">{storie.title}</div>
-          <div className="line__content__info">{storie.info}</div>
-          <div className="line__content__info">{storie.amount_wanted}</div>
+          <div className="li-content-one-info">
+            <div className="li-content-details">
+              My story title: {storie.title}
+            </div>
+            <div className="li-content-details">
+              My story description: {storie.info}
+            </div>
+            <div className="li-content-details">
+              Amount wanted: {storie.amount_wanted}
+            </div>
+          </div>
         </div>
-        <div className="line__buttons">
-          <button
-            onClick={() => setModalData(storie)}
-            type="button"
-            className="btn btn-outline-success"
-          >
-            Edit
-          </button>
-          <button
-            onClick={() => setDeleteData(storie)}
-            type="button"
-            className="btn btn-outline-danger"
-          >
-            Delete
-          </button>
-        </div>
+      </div>
+      <div className="li-btn-box">
+        <button
+          onClick={() => setModalData(storie)}
+          type="button"
+          className="btn btn-outline-success"
+        >
+          Edit
+        </button>
+        <button
+          onClick={() => setDeleteData(storie)}
+          type="button"
+          className="btn btn-outline-danger"
+        >
+          Delete
+        </button>
       </div>
     </li>
   );

@@ -5,55 +5,57 @@
   background-color: #0000005f;
 }
 
-// for home list style
+//
 
-.line__content {
+.li-content-one {
   display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  min-height: 200px;
-  & .line__content__image {
-    min-width: 200px;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+  & h1,
+  h2,
+  h3,
+  h4 {
+    text-transform: capitalize;
+    color: darkgreen;
   }
-  & .line__content__info {
+  & .li-content-one-main {
     display: flex;
-    flex-direction: column;
-    gap: 5px;
-    & .line__content__price {
-      color: olivedrab;
-      font-weight: bold;
-    }
-    & .line__content__color {
-      display: flex;
-      gap: 15px;
-    }
-    & .home__buttons > * {
-      margin-right: 10px;
+    justify-content: flex-start;
+    border: 2px dotted orangered;
+    align-items: center;
+    padding: 16px;
+    & .li-content-one-img {
+      margin-right: 36px;
+      min-width: 180px;
     }
   }
 }
+
+.li-content-many {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  & > * {
+    width: 50%;
+  }
+}
+
+.li-btn-box {
+  display: flex;
+  gap: 12px;
+}
+
+// basic elements
 
 .img-bin {
   margin: 10px;
   display: flex;
   flex-direction: column;
   & img {
-    width: 150px;
+    width: 180px;
     height: auto;
     display: block;
-  }
-}
-
-.click-link {
-  cursor: pointer;
-}
-
-.card-small-info {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  & > * {
-    padding: 10px 20px;
   }
 }
 
@@ -64,29 +66,8 @@
   padding: 3px 5px;
 }
 
-.order-details {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  gap: 5px;
-  margin: 15px 0;
-  & > * {
-    color: grey;
-  }
-}
-
-.order-status {
-  margin-bottom: 15px;
-}
-
-.manage-order-btns {
-  display: flex;
-  gap: 15px;
-}
-
-.size-select {
-  display: flex;
-  gap: 15px;
+.click-link {
+  cursor: pointer;
 }
 
 .msg-bin {
@@ -131,5 +112,30 @@
     flex-direction: column;
     align-items: center;
     z-index: 10;
+  }
+
+  .li-content-one {
+    .li-content-one-main {
+      display: flex;
+      flex-direction: column;
+      & .li-content-one-img {
+        margin-right: 0px;
+        min-width: 140px;
+      }
+    }
+  }
+
+  .li-content-many {
+    & > * {
+      width: 80%;
+    }
+  }
+
+  .img-bin {
+    margin: 6px;
+
+    & img {
+      width: 140px;
+    }
   }
 }

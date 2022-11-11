@@ -1,4 +1,5 @@
 import { useState, useContext, useRef } from "react";
+import DataContext from "../../Contexts/DataContext";
 import StoriesUserContext from "../../Contexts/StoriesUserContext";
 import getBase64 from "../../Functions/getBase64";
 
@@ -10,6 +11,7 @@ function CreateS() {
   const fileInput = useRef();
 
   const { setCreateData, currentUserId } = useContext(StoriesUserContext);
+  const { setMsg } = useContext(DataContext);
 
   console.log(currentUserId);
 
@@ -22,6 +24,20 @@ function CreateS() {
   };
 
   const add = () => {
+    if (title === "" || info === "" || amount_wanted === "") {
+      setMsg("Please fill all required fields");
+      return;
+    }
+    if (title.length < 3 || title.length > 30) {
+      setMsg("Title must be longer than 2 and shorter than 30 symbols");
+      return;
+    }
+    if (info.length < 10 || info.length > 2000) {
+      setMsg(
+        "Description must be longer than 10 and shorter than 2000 symbols"
+      );
+      return;
+    }
     setCreateData({
       title,
       info,

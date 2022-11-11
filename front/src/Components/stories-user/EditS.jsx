@@ -38,7 +38,6 @@ function EditS() {
     if (null === modalData) {
       return;
     }
-
     setTitle(modalData.title);
     setInfo(modalData.info);
     setAmount_wanted(modalData.amount_wanted);
@@ -62,7 +61,7 @@ function EditS() {
               className="btn-close"
             ></button>
           </div>
-          <div className="modal-body"></div>
+
           <div className="card m-4">
             <div className="card-body">
               <div className="mb-3">
@@ -75,7 +74,7 @@ function EditS() {
                 />
               </div>
               <div className="mb-3">
-                <label className="form-label">Info</label>
+                <label className="form-label">Description</label>
                 <input
                   type="text"
                   className="form-control"
@@ -94,7 +93,7 @@ function EditS() {
               </div>
               {photoPrint ? (
                 <div className="img-bin">
-                  <label htmlFor="image-delete">X</label>
+                  <label htmlFor="image-delete">Delete image?</label>
                   <input
                     id="image-delete"
                     type="checkbox"
