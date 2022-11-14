@@ -18,6 +18,12 @@ function LineH({ storie }) {
       setMsg("Minimum donation 1 Eur, maximum donation 1000000 Eur");
       return;
     }
+    if (amount > storie[1][0].amount_left) {
+      setMsg(
+        "We were hoping to collect less than you are willing to donate... "
+      );
+      return;
+    }
     setDonation({
       name,
       amount_donating: Number(amount),
