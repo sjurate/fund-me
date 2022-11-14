@@ -42,6 +42,7 @@ function CreateS() {
       title,
       info,
       amount_wanted: Number(amount_wanted),
+      amount_left: Number(amount_wanted),
       user_id: Number(currentUserId),
       image: photoPrint,
     });

@@ -54,6 +54,9 @@ function LineH({ storie }) {
               {storie[1][0].amount_collected ?? "no donations yet"} Eur
             </div>
             <div className="li-content-details">
+              Left to collect: {storie[1][0].amount_left} Eur
+            </div>
+            <div className="li-content-details">
               Our story: {storie[1][0].info}
             </div>
           </div>

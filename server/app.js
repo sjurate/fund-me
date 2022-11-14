@@ -144,8 +144,8 @@ app.get("/home/users", (req, res) => {
 
 app.post("/home/stories", (req, res) => {
   const sql = `
-    INSERT INTO stories (title, info, amount_wanted, image, user_id)
-    VALUES (?, ?, ?, ?, ?)
+    INSERT INTO stories (title, info, amount_wanted, amount_left, image, user_id)
+    VALUES (?, ?, ?, ?, ?, ?)
     `;
   con.query(
     sql,
@@ -153,6 +153,7 @@ app.post("/home/stories", (req, res) => {
       req.body.title,
       req.body.info,
       req.body.amount_wanted,
+      req.body.amount_left,
       req.body.image,
       req.body.user_id,
     ],
@@ -285,7 +286,8 @@ app.put("/home/stories-donation/:id", (req, res) => {
   const sql = `
     UPDATE stories
     SET 
-    amount_collected = amount_collected + ?
+    amount_collected = amount_collected + ?,
+    amount_left = amount_wanted - amount_collected
     WHERE id = ?
     `;
   con.query(sql, [req.body.amount_donating, req.params.id], (err, result) => {
